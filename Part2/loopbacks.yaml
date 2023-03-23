@@ -1,0 +1,4 @@
+loopbacks:
+  - loopbackname: "Loopback12"
+    ip: "10.1.2.3"
+    mask: "24"

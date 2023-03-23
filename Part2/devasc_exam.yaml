@@ -1,0 +1,42 @@
+- name: CREATE lO12 ON CSR1000V ROUTER
+  hosts: CSR1kv
+  gather_facts: false
+  connection: local
+  vars_files:
+    - loopbacks.yaml
+ 
+  tasks:
+   - name: CREATE LOOPBACK 12
+     ios_interface:
+       name: "{{ item.loopbackname }}"
+       enabled: True
+     with_items: "{{ loopbacks }}"
+
+   - name: ASSIGN IP TO LOOPBACK INTERFACE
+     ios_l3_interface:
+       name: "{{ item.loopbackname }}"
+       ipv4: "{{ item.ip }}/{{ item.mask }}"
+     with_items: "{{ loopbacks }}"
+
+
+   - name: DISPLAY THE INTERFACE BRIEF
+     ios_command:
+       commands:
+         - show ip interface brief
+     register: interface
+
+   - name: SAVE INTERFACE OUTPUT TO ./output/
+     copy:
+       content: "{{ interface.stdout[0] }}"
+       dest: "output/show_interface_{{ inventory_hostname }}.txt"
+
+   - name: DISPLAY THE VERSION
+     ios_command:
+       commands:
+         - show version
+     register: version
+
+   - name: SAVE VERSION OUTPUT TO ./output/
+     copy:
+       content: "{{ version.stdout[0] }}"
+       dest: "output/show_version_{{ inventory_hostname }}.txt"
