@@ -1,0 +1,1 @@
+Den vil ikke alde mig installere apache gennem apt-get, så kan ikke hente pakken til at lave en dockerfil
